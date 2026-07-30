@@ -7,7 +7,7 @@ const faculty = [
   { name: "Dr. Shilpi Ruchi",subject:"MPMC",email: "shilpi@vit.ac.in",cabin: "SJT 202"},
 ];
 
-const avatarColors = ["#1565c0","#7b1fa2","#0288d1","#2e7d32","#e65100","#c62828"];
+//const avatarColors = ["#1565c0","#7b1fa2","#0288d1","#2e7d32","#e65100","#c62828"];
 
 function Faculty({ setPage }) {
   return (
