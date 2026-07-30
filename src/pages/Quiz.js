@@ -19,29 +19,29 @@ function Quiz() {
   const [answers, setAnswers] = useState(Array(10).fill(null));
   const [score, setScore] = useState(null);
 
-  function submit() {
-    let sc = 0;
-    answers.forEach((a, i) => {
-      if (a === questions[i].ans) sc++;
-    });
-    setScore(sc);
-    alert("Test submitted!");
+  const submit = useCallback(() => {
+  let sc = 0;
+  answers.forEach((a, i) => {
+    if (a === questions[i].ans) sc++;
+  });
+  setScore(sc);
+  alert("Test submitted!");
+}, [answers]);
+
+ useEffect(() => {
+  if (!started || score !== null) return;
+
+  if (time <= 0) {
+    submit();
+    return;
   }
 
-  useEffect(() => {
-    if (!started || score !== null) return;
+  const timer = setInterval(() => {
+    setTime((t) => t - 1);
+  }, 1000);
 
-    if (time <= 0) {
-      submit();
-      return;
-    }
-
-    const timer = setInterval(() => {
-      setTime((t) => t - 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [time, started, score]);
+  return () => clearInterval(timer);
+}, [time, started, score, submit]);
 
   const handleSelect = (qIndex, optIndex) => {
     const newAns = [...answers];
