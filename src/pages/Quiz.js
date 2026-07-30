@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 const questions = [
   { q: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High Text Machine Language", "Hyperlinks Text Mark"], ans: 0 },
@@ -30,7 +30,7 @@ function Quiz() {
     if (time <= 0) submit();
 
     return () => clearInterval(timer);
-  }, [time, started]);
+  }, [time, started, submit]);
 
   const handleSelect = (qIndex, optIndex) => {
     const newAns = [...answers];
@@ -38,14 +38,14 @@ function Quiz() {
     setAnswers(newAns);
   };
 
-  const submit = () => {
-    let sc = 0;
-    answers.forEach((a, i) => {
-      if (a === questions[i].ans) sc++;
-    });
-    setScore(sc);
-    alert("Test submitted!");
-  };
+  const submit = useCallback(() => {
+  let sc = 0;
+  answers.forEach((a, i) => {
+    if (a === questions[i].ans) sc++;
+  });
+  setScore(sc);
+  alert("Test submitted!");
+}, [answers]);
 
  
   if (!started) {
