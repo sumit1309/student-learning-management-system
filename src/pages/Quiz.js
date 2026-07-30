@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
 const questions = [
   { q: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High Text Machine Language", "Hyperlinks Text Mark"], ans: 0 },
@@ -19,18 +19,29 @@ function Quiz() {
   const [answers, setAnswers] = useState(Array(10).fill(null));
   const [score, setScore] = useState(null);
 
-  
+  function submit() {
+    let sc = 0;
+    answers.forEach((a, i) => {
+      if (a === questions[i].ans) sc++;
+    });
+    setScore(sc);
+    alert("Test submitted!");
+  }
+
   useEffect(() => {
-    if (!started) return;
+    if (!started || score !== null) return;
+
+    if (time <= 0) {
+      submit();
+      return;
+    }
 
     const timer = setInterval(() => {
-      setTime(t => t - 1);
+      setTime((t) => t - 1);
     }, 1000);
 
-    if (time <= 0) submit();
-
     return () => clearInterval(timer);
-  }, [time, started, submit]);
+  }, [time, started, score]);
 
   const handleSelect = (qIndex, optIndex) => {
     const newAns = [...answers];
@@ -38,16 +49,6 @@ function Quiz() {
     setAnswers(newAns);
   };
 
-  const submit = useCallback(() => {
-  let sc = 0;
-  answers.forEach((a, i) => {
-    if (a === questions[i].ans) sc++;
-  });
-  setScore(sc);
-  alert("Test submitted!");
-}, [answers]);
-
- 
   if (!started) {
     return (
       <div className="card">
@@ -57,28 +58,41 @@ function Quiz() {
     );
   }
 
-  
   if (score !== null) {
-    return <h2>Score: {score}/10</h2>;
+    return (
+      <div className="card">
+        <h2>Quiz Completed!</h2>
+        <h3>Score: {score}/10</h3>
+      </div>
+    );
   }
 
   return (
     <div className="card">
       <h2>Quiz</h2>
-      <p>Time: {Math.floor(time/60)}:{String(time%60).padStart(2, "0")}</p>
+      <p>
+        Time: {Math.floor(time / 60)}:
+        {String(time % 60).padStart(2, "0")}
+      </p>
 
       {questions.map((q, i) => (
         <div key={i} style={{ marginBottom: "15px" }}>
-          <p>{i + 1}. {q.q}</p>
+          <p>
+            {i + 1}. {q.q}
+          </p>
+
           {q.options.map((opt, j) => (
             <div key={j}>
-              <input
-                type="radio"
-                name={`q${i}`}
-                checked={answers[i] === j}
-                onChange={() => handleSelect(i, j)}
-              />
-              {opt}
+              <label>
+                <input
+                  type="radio"
+                  name={`q${i}`}
+                  checked={answers[i] === j}
+                  onChange={() => handleSelect(i, j)}
+                />
+                {" "}
+                {opt}
+              </label>
             </div>
           ))}
         </div>
